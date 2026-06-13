@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSc Software Engineering National Exit Exam Simulator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        premium: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#030712'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-indigo {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-premium-950 text-slate-100 font-sans antialiased min-h-full flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
+
+    <!-- NAVIGATION HEADER -->
+    <header class="border-b border-slate-800 bg-premium-900/80 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 14l9-5-9-5-9 5 9 5z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-sm sm:text-base font-bold text-white tracking-wide">EXIT EXAM PORTAL</h1>
+                    <p class="text-xs text-slate-400 font-medium">BSc Software Engineering</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <span id="global-badge" class="px-3 h-7 flex items-center justify-center rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                    National Simulation Engine
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <script>
+        // Exact 200 question bank mapped meticulously to provided exit exam domains and keys.
+        const EXAM_DATABASE = [
+            // Course 1: Fundamentals of Programming (Q1-15)
+            { id: 1, cat: "Fundamentals of Programming", q: "Which loop is guaranteed to execute at least once?", options: { A: "for", B: "while", C: "do-while", D: "foreach" }, ans: "C" },
+            { id: 2, cat: "Fundamentals of Programming", q: "What is the output of: x=5; for i=1 to 3: x=x*i; print x?", options: { A: "15", B: "30", C: "60", D: "125" }, ans: "B" },
+            { id: 3, cat: "Fundamentals of Programming", q: "In pass-by-reference, modifying the parameter inside a function:", options: { A: "Has no effect on original", B: "Modifies a copy", C: "Modifies the original variable", D: "Deletes the original" }, ans: "C" },
+            { id: 4, cat: "Fundamentals of Programming", q: "What is the base case of factorial(n)?", options: { A: "n==1 returns n", B: "n==0 returns 1", C: "n>0 returns n", D: "n==2 returns 2" }, ans: "B" },
+            { id: 5, cat: "Fundamentals of Programming", q: "Variable shadowing means:", options: { A: "Global overrides local", B: "Local hides global within scope", C: "Two vars share memory", D: "Constant masks variable" }, ans: "B" },
+            { id: 6, cat: "Fundamentals of Programming", q: "Implicit type conversion means:", options: { A: "Programmer casts manually", B: "Compiler converts automatically", C: "Runtime type error", D: "Library function converts" }, ans: "B" },
+            { id: 7, cat: "Fundamentals of Programming", q: "Main advantage of modular programming:", options: { A: "Uses more memory", B: "Harder to debug", C: "Promotes code reuse", D: "Prevents recursion" }, ans: "C" },
+            { id: 8, cat: "Fundamentals of Programming", q: "Function overloading means:", options: { A: "Calling function many times", B: "Same name different parameters", C: "Function calls itself", D: "Too many arguments" }, ans: "B" },
+            { id: 9, cat: "Fundamentals of Programming", q: "No 'break' in switch-case causes:", options: { A: "Compile error", B: "Fall-through to next case", C: "Program terminates", D: "Only matched case runs" }, ans: "B" },
+            { id: 10, cat: "Fundamentals of Programming", q: "What is the scope of a variable declared inside a function?", options: { A: "Global", B: "Local to that function", C: "Available in all files", D: "Accessible only in loops" }, ans: "B" },
+            { id: 11, cat: "Fundamentals of Programming", q: "Recursion requires which two components?", options: { A: "Loop and condition", B: "Base case and recursive case", C: "Array and pointer", D: "Function and variable" }, ans: "B" },
+            { id: 12, cat: "Fundamentals of Programming", q: "Local variables are stored in:", options: { A: "Heap", B: "Stack", C: "Global memory", D: "Register always" }, ans: "B" },
+            { id: 13, cat: "Fundamentals of Programming", q: "What is the purpose of a function prototype?", options: { A: "Defines function body", B: "Declares function signature before use", C: "Calls the function", D: "Allocates memory for function" }, ans: "B" },
+            { id: 14, cat: "Fundamentals of Programming", q: "Nested loops have what time complexity when both run n times?", options: { A: "O(n)", B: "O(n log n)", C: "O(n²)", D: "O(2n)" }, ans: "C" },
+            { id: 15, cat: "Fundamentals of Programming", q: "Recursion depth is limited by:", options: { A: "Heap size", B: "Call stack size", C: "CPU speed", D: "Array length" }, ans: "B" },
+
+            // Course 2: Data Structures & Algorithms (Q16-30)
+            { id: 16, cat: "Data Structures & Algorithms", q: "Time complexity of searching in a balanced BST?", options: { A: "O(n)", B: "O(n log n)", C: "O(log n)", D: "O(1)" }, ans: "C" },
+            { id: 17, cat: "Data Structures & Algorithms", q: "Which sort is O(n log n) in ALL cases?", options: { A: "Quick Sort", B: "Bubble Sort", C: "Merge Sort", D: "Insertion Sort" }, ans: "C" },
+            { id: 18, cat: "Data Structures & Algorithms", q: "Which stack operation removes top element?", options: { A: "enqueue", B: "dequeue", C: "push", D: "pop" }, ans: "D" },
+            { id: 19, cat: "Data Structures & Algorithms", q: "BST inorder traversal gives:", options: { A: "Random order", B: "Sorted ascending order", C: "Reverse order", D: "Level order" }, ans: "B" },
+            { id: 20, cat: "Data Structures & Algorithms", q: "BFS uses which data structure?", options: { A: "Stack", B: "Priority queue", C: "Queue", D: "Deque" }, ans: "C" },
+            { id: 21, cat: "Data Structures & Algorithms", q: "In Max-Heap, which property must hold?", options: { A: "Parent < children", B: "Left > right", C: "Parent >= both children", D: "All leaves same level" }, ans: "C" },
+            { id: 22, cat: "Data Structures & Algorithms", q: "Worst case of Quick Sort and its cause?", options: { A: "O(n log n) — random pivot", B: "O(n²) — worst pivot choice", C: "O(n) — sorted input", D: "O(log n) — balanced partitions" }, ans: "B" },
+            { id: 23, cat: "Data Structures & Algorithms", q: "Which finds shortest path in weighted graph, no negative weights?", options: { A: "BFS", B: "DFS", C: "Dijkstra", D: "Kruskal" }, ans: "C" },
+            { id: 24, cat: "Data Structures & Algorithms", q: "Time to insert at HEAD of singly linked list?", options: { A: "O(n)", B: "O(log n)", C: "O(n²)", D: "O(1)" }, ans: "D" },
+            { id: 25, cat: "Data Structures & Algorithms", q: "LIFO describes which data structure?", options: { A: "Queue", B: "Stack", C: "Tree", D: "Graph" }, ans: "B" },
+            { id: 26, cat: "Data Structures & Algorithms", q: "What is Big-O notation used for?", options: { A: "Counting lines of code", B: "Worst-case upper bound on time/space growth", C: "Measuring actual execution time", D: "Ranking algorithms by difficulty" }, ans: "B" },
+            { id: 27, cat: "Data Structures & Algorithms", q: "Binary search time complexity?", options: { A: "O(n)", B: "O(n²)", C: "O(log n)", D: "O(1)" }, ans: "C" },
+            { id: 28, cat: "Data Structures & Algorithms", q: "DFS uses which data structure (or concept)?", options: { A: "Queue", B: "Stack/Recursion", C: "Priority Queue", D: "Circular Buffer" }, ans: "B" },
+            { id: 29, cat: "Data Structures & Algorithms", q: "What is an AVL tree?", options: { A: "Binary tree with alphabetical order", B: "Self-balancing BST with |balance factor| ≤ 1", C: "B-tree variant", D: "Heap with AVL property" }, ans: "B" },
+            { id: 30, cat: "Data Structures & Algorithms", q: "What does 'stable' mean for a sorting algorithm?", options: { A: "Never crashes", B: "Preserves relative order of equal elements", C: "Runs in O(n log n)", D: "Works on linked lists" }, ans: "B" },
+
+            // Course 3: Object-Oriented Programming (Q31-45)
+            { id: 31, cat: "Object-Oriented Programming", q: "Child class redefining parent method is called:", options: { A: "Overloading", B: "Encapsulation", C: "Overriding", D: "Abstraction" }, ans: "C" },
+            { id: 32, cat: "Object-Oriented Programming", q: "Abstract class vs Interface in Java:", options: { A: "Abstract can have concrete methods; interface (pre-Java 8) cannot", B: "Interface can be instantiated", C: "Abstract supports multiple inheritance", D: "No difference" }, ans: "A" },
+            { id: 33, cat: "Object-Oriented Programming", q: "Private access modifier makes field accessible:", options: { A: "Everywhere", B: "Subclasses only", C: "Within its own class only", D: "Package only" }, ans: "C" },
+            { id: 34, cat: "Object-Oriented Programming", q: "'finally' block guarantees:", options: { A: "Runs only if exception thrown", B: "Runs only if no exception", C: "Always runs", D: "Runs before try block" }, ans: "C" },
+            { id: 35, cat: "Object-Oriented Programming", q: "Single Responsibility Principle means:", options: { A: "One method per class", B: "Class has only one reason to change", C: "One class per file", D: "One inheritance level" }, ans: "B" },
+            { id: 36, cat: "Object-Oriented Programming", q: "Filled diamond in UML means:", options: { A: "Child exists without parent", B: "Simple association", C: "Composition: child cannot exist without parent", D: "Interface implementation" }, ans: "C" },
+            { id: 37, cat: "Object-Oriented Programming", q: "Compile-time polymorphism is achieved by:", options: { A: "Method overriding", B: "Dynamic dispatch", C: "Method overloading", D: "Late binding" }, ans: "C" },
+            { id: 38, cat: "Object-Oriented Programming", q: "Singleton pattern ensures:", options: { A: "Multiple instances", B: "One instance only", C: "No instances", D: "Thread-safe instances always" }, ans: "B" },
+            { id: 39, cat: "Object-Oriented Programming", q: "Encapsulation primarily protects:", options: { A: "Inheritance chain", B: "Data integrity by restricting direct access", C: "Method overloading", D: "Object instantiation" }, ans: "B" },
+            { id: 40, cat: "Object-Oriented Programming", q: "Open/Closed Principle states classes should be:", options: { A: "Open to modification, closed to extension", B: "Open to extension, closed to modification", C: "Both open to modification and extension", D: "Closed to both" }, ans: "B" },
+            { id: 41, cat: "Object-Oriented Programming", q: "Which OOP concept hides implementation details?", options: { A: "Inheritance", B: "Polymorphism", C: "Abstraction", D: "Encapsulation" }, ans: "C" },
+            { id: 42, cat: "Object-Oriented Programming", q: "Liskov Substitution Principle states:", options: { A: "Subclass can replace parent without breaking program", B: "Classes should be closed to extension", C: "Interfaces should be small", D: "Dependencies should be injected" }, ans: "A" },
+            { id: 43, cat: "Object-Oriented Programming", q: "Dependency Inversion Principle states:", options: { A: "High-level modules depend on low-level", B: "Depend on abstractions not concretions", C: "Inject dependencies at compile time", D: "Classes depend on all other classes" }, ans: "B" },
+            { id: 44, cat: "Object-Oriented Programming", q: "Which keyword prevents a class from being subclassed in Java?", options: { A: "abstract", B: "static", C: "final", D: "sealed" }, ans: "C" },
+            { id: 45, cat: "Object-Oriented Programming", q: "What is a static variable in OOP?", options: { A: "Variable that cannot change", B: "Variable shared across all instances of a class", C: "Variable only in static methods", D: "Variable initialized at runtime" }, ans: "B" },
+
+            // Course 4: Web Programming (Q46-60)
+            { id: 46, cat: "Web Programming", q: "HTTP method for partial update?", options: { A: "PUT", B: "POST", C: "PATCH", D: "UPDATE" }, ans: "C" },
+            { id: 47, cat: "Web Programming", q: "CSS Box Model from inside out?", options: { A: "Margin,Border,Padding,Content", B: "Content,Padding,Border,Margin", C: "Padding,Content,Margin,Border", D: "Border,Padding,Content,Margin" }, ans: "B" },
+            { id: 48, cat: "Web Programming", q: "JavaScript block-scoped non-reassignable?", options: { A: "var", B: "let", C: "const", D: "static" }, ans: "C" },
+            { id: 49, cat: "Web Programming", q: "Prepared statement prevents?", options: { A: "XSS", B: "SQL Injection", C: "CSRF", D: "DDoS" }, ans: "B" },
+            { id: 50, cat: "Web Programming", q: "Best CSS for 2D grid layouts?", options: { A: "Flexbox", B: "Float", C: "Grid", D: "Inline-block" }, ans: "C" },
+            { id: 51, cat: "Web Programming", q: "XSS is prevented by?", options: { A: "Parameterised queries", B: "Sanitising/escaping output", C: "CSRF tokens", D: "HTTPS" }, ans: "B" },
+            { id: 52, cat: "Web Programming", q: "async/await in JavaScript?", options: { A: "Blocks main thread", B: "Converts sync to async", C: "Cleaner Promise syntax without blocking event loop", D: "Replaces callbacks with loops" }, ans: "C" },
+            { id: 53, cat: "Web Programming", q: "CSS media query enables?", options: { A: "Embed video", B: "Query server-side DB", C: "Different styles by device characteristics", D: "Load different JS files" }, ans: "C" },
+            { id: 54, cat: "Web Programming", q: "What is the DOM?", options: { A: "Document Object Model — tree representation of HTML document", B: "Data Object Manager", C: "Domain Operations Module", D: "Dynamic Object Method" }, ans: "A" },
+            { id: 55, cat: "Web Programming", q: "What is event bubbling in JavaScript?", options: { A: "Event fires multiple times", B: "Event propagates from target up through parent elements", C: "Event cancels itself", D: "Event fires on all elements simultaneously" }, ans: "B" },
+            { id: 56, cat: "Web Programming", q: "HTTP is described as which type of protocol?", options: { A: "Connection-oriented", B: "Stateless request-response", C: "Persistent state", D: "Encrypted by default" }, ans: "B" },
+            { id: 57, cat: "Web Programming", q: "What are sessions in web development?", options: { A: "HTML segments", B: "Server-side mechanism to maintain user state across HTTP requests", C: "CSS transitions", D: "JavaScript closures" }, ans: "B" },
+            { id: 58, cat: "Web Programming", q: "What is a RESTful API?", options: { A: "API using WebSockets", B: "API following REST principles using HTTP methods for CRUD", C: "API requiring authentication", D: "API with XML only" }, ans: "B" },
+            { id: 59, cat: "Web Programming", q: "What is a Promise in JavaScript?", options: { A: "A guaranteed result", B: "Object representing eventual completion or failure of async operation", C: "A callback function", D: "An event listener" }, ans: "B" },
+            { id: 60, cat: "Web Programming", q: "What is CORS?", options: { A: "Content Ordering Resource System", B: "Cross-Origin Resource Sharing — controls cross-domain HTTP requests", C: "Cached Object Retrieval Service", D: "Certificate Origin Request Standard" }, ans: "B" },
+
+            // Course 5: Mobile Application Development (Q61-75)
+            { id: 61, cat: "Mobile Application Development", q: "Android method called when activity becomes visible?", options: { A: "onCreate()", B: "onStart()", C: "onResume()", D: "onRestart()" }, ans: "B" },
+            { id: 62, cat: "Mobile Application Development", q: "AndroidManifest.xml declares?", options: { A: "UI layout", B: "App components, permissions, SDK version", C: "Key-value pairs", D: "DB schema" }, ans: "B" },
+            { id: 63, cat: "Mobile Application Development", q: "Background component with no UI in Android?", options: { A: "Activity", B: "Fragment", C: "Service", D: "ContentProvider" }, ans: "C" },
+            { id: 64, cat: "Mobile Application Development", q: "MVVM in Android uses ViewModel and?", options: { A: "SharedPreferences", B: "LiveData", C: "SQLite", D: "Intent" }, ans: "B" },
+            { id: 65, cat: "Mobile Application Development", q: "Why not store sensitive data in SharedPreferences?", options: { A: "Doesn't support strings", B: "Stores as plaintext", C: "Deleted on update", D: "Too slow" }, ans: "B" },
+            { id: 66, cat: "Mobile Application Development", q: "Certificate pinning prevents?", options: { A: "DDoS attacks", B: "Man-in-the-Middle attacks", C: "SQL injection", D: "XSS attacks" }, ans: "B" },
+            { id: 67, cat: "Mobile Application Development", q: "Intent in Android is?", options: { A: "Layout definition", B: "Messaging object to start components or communicate", C: "Background thread", D: "DB manager" }, ans: "B" },
+            { id: 68, cat: "Mobile Application Development", q: "What is a Fragment in Android?", options: { A: "Background service", B: "Reusable UI portion that can be part of an Activity", C: "Data access layer", D: "Intent type" }, ans: "B" },
+            { id: 69, cat: "Mobile Application Development", q: "RecyclerView is used for?", options: { A: "Displaying images", B: "Efficiently displaying large scrollable lists", C: "Playing media", D: "Handling permissions" }, ans: "B" },
+            { id: 70, cat: "Mobile Application Development", q: "What is Room library in Android?", options: { A: "UI component library", B: "Abstraction layer over SQLite for easier database access", C: "Networking library", D: "Dependency injection framework" }, ans: "B" },
+            { id: 71, cat: "Mobile Application Development", q: "Android runtime permissions (Android 6+) require?", options: { A: "Only manifest declaration", B: "Explicit user approval at runtime for sensitive permissions", C: "App restart to grant", D: "Root access" }, ans: "B" },
+            { id: 72, cat: "Mobile Application Development", q: "What does ProGuard/R8 do in Android?", options: { A: "Compresses images", B: "Obfuscates/shrinks code to hinder reverse engineering", C: "Manages dependencies", D: "Encrypts SharedPreferences" }, ans: "B" },
+            { id: 73, cat: "Mobile Application Development", q: "What is the purpose of ViewModel in MVVM?", options: { A: "Render UI components", B: "Hold and manage UI-related data surviving configuration changes", C: "Handle network calls directly", D: "Store files on disk" }, ans: "B" },
+            { id: 74, cat: "Mobile Application Development", q: "EncryptedSharedPreferences is preferred over SharedPreferences because?", options: { A: "Faster access", B: "Encrypts stored data protecting sensitive information", C: "Supports more data types", D: "Syncs to cloud" }, ans: "B" },
+            { id: 75, cat: "Mobile Application Development", q: "What is Jetpack Compose?", options: { A: "Gradle plugin", B: "Modern declarative UI toolkit for Android", C: "Dependency injection", D: "Testing framework" }, ans: "B" },
+
+            // Course 6: Fundamentals of Databases (Q76-90)
+            { id: 76, cat: "Fundamentals of Databases", q: "Normal form eliminating transitive dependencies?", options: { A: "1NF", B: "2NF", C: "3NF", D: "BCNF" }, ans: "C" },
+            { id: 77, cat: "Fundamentals of Databases", q: "ACID Isolation means?", options: { A: "Permanently saved", B: "Concurrent transactions don't interfere", C: "Completes fully or not at all", D: "Stays consistent" }, ans: "B" },
+            { id: 78, cat: "Fundamentals of Databases", q: "LEFT JOIN returns?", options: { A: "Only matching rows", B: "All left + matching right (NULLs for non-matching)", C: "All right + matching left", D: "All rows from both tables with NULLs where no match" }, ans: "D" },
+            { id: 79, cat: "Fundamentals of Databases", q: "M:N relationship converted to tables by?", options: { A: "Adding FK to both", B: "Creating junction table", C: "Merging entities", D: "FK on smaller table" }, ans: "B" },
+            { id: 80, cat: "Fundamentals of Databases", q: "Partial dependency eliminated by?", options: { A: "3NF", B: "BCNF", C: "2NF", D: "1NF" }, ans: "C" },
+            { id: 81, cat: "Fundamentals of Databases", q: "Adding index speeds up SELECT but slows?", options: { A: "DELETE only", B: "INSERT and UPDATE", C: "SELECT further", D: "COMMIT" }, ans: "B" },
+            { id: 82, cat: "Fundamentals of Databases", q: "1NF violation characteristic?", options: { A: "Transitive dependency", B: "Repeating groups or multi-valued attributes in cell", C: "Partial dependency", D: "Two candidate keys" }, ans: "B" },
+            { id: 83, cat: "Fundamentals of Databases", q: "ACID Atomicity means?", options: { A: "Concurrent safe", B: "Valid state maintained", C: "Transaction fully completes or fully rolls back", D: "Data survives failure" }, ans: "C" },
+            { id: 84, cat: "Fundamentals of Databases", q: "ACID Consistency means?", options: { A: "Transactions don't interfere", B: "Database moves from one valid state to another", C: "Changes are permanent", D: "Transactions are atomic" }, ans: "B" },
+            { id: 85, cat: "Fundamentals of Databases", q: "What is a primary key?", options: { A: "Most important table", B: "Column(s) uniquely identifying each row", C: "First column of table", D: "Foreign key constraint" }, ans: "B" },
+            { id: 86, cat: "Fundamentals of Databases", q: "What is a foreign key?", options: { A: "Key from external system", B: "Column referencing primary key in another table", C: "Key encrypted for security", D: "Composite key" }, ans: "B" },
+            { id: 87, cat: "Fundamentals of Databases", q: "What does HAVING clause do?", options: { A: "Filters rows before grouping", B: "Filters groups after GROUP BY (like WHERE for groups)", C: "Sorts groups", D: "Joins groups" }, ans: "B" },
+            { id: 88, cat: "Fundamentals of Databases", q: "What is normalization?", options: { A: "Converting data to normal form (binary)", B: "Eliminating data redundancy and update anomalies", C: "Normalizing numeric values", D: "Standardizing column names" }, ans: "B" },
+            { id: 89, cat: "Fundamentals of Databases", q: "What is a dirty read concurrency problem?", options: { A: "Reading committed data", B: "Reading uncommitted data from another transaction that may rollback", C: "Reading same row twice", D: "Reading non-existent row" }, ans: "B" },
+            { id: 90, cat: "Fundamentals of Databases", q: "Highest isolation level preventing all anomalies?", options: { A: "READ UNCOMMITTED", B: "READ COMMITTED", C: "REPEATABLE READ", D: "SERIALIZABLE" }, ans: "D" },
+
+            // Course 7: Operating Systems (Q91-105)
+            { id: 91, cat: "Operating Systems", q: "Which scheduling can cause starvation?", options: { A: "Round Robin", B: "FCFS", C: "Priority Scheduling", D: "SJF" }, ans: "C" },
+            { id: 92, cat: "Operating Systems", q: "Four necessary deadlock conditions?", options: { A: "Preemption, Hold-Wait, Circular, Starvation", B: "Mutual Exclusion, Hold-Wait, No Preemption, Circular Wait", C: "Mutual Exclusion, Preemption, Sharing, Circular", D: "Hold-Wait, Starvation, Priority Inversion, No Preemption" }, ans: "B" },
+            { id: 93, cat: "Operating Systems", q: "Internal fragmentation means?", options: { A: "Free memory is scattered", B: "Allocated block larger than needed", C: "OS memory overlaps user", D: "Pages of different sizes" }, ans: "B" },
+            { id: 94, cat: "Operating Systems", q: "TLB is used for?", options: { A: "Storing disk blocks", B: "Caching page table entries for faster address translation", C: "Buffering I/O", D: "Storing PCBs" }, ans: "B" },
+            { id: 95, cat: "Operating Systems", q: "Thrashing means:", options: { A: "Too many system calls", B: "Process spending more time paging than executing", C: "OS overwriting user memory", D: "Disk fragmentation" }, ans: "B" },
+            { id: 96, cat: "Operating Systems", q: "Optimal page replacement replaces page:", options: { A: "Added earliest (FIFO)", B: "Least recently used", C: "Not used for longest future time", D: "Accessed most recently" }, ans: "C" },
+            { id: 97, cat: "Operating Systems", q: "Process vs Thread?", options: { A: "Thread has own memory; process shares", B: "Process has own memory space; thread is lighter within process sharing memory", C: "Threads are heavier", D: "Process can have one thread only" }, ans: "B" },
+            { id: 98, cat: "Operating Systems", q: "Banker's Algorithm does:", options: { A: "Detects deadlocks", B: "Avoids deadlock by only granting safe-state requests", C: "Prevents by eliminating hold-and-wait", D: "Ignores deadlock" }, ans: "B" },
+            { id: 99, cat: "Operating Systems", q: "What is context switching?", options: { A: "Changing process priority", B: "Saving state of one process and loading state of another", C: "Switching CPU cores", D: "Changing memory pages" }, ans: "B" },
+            { id: 100, cat: "Operating Systems", q: "What is virtual memory?", options: { A: "RAM on GPU", B: "Technique allowing process to use more memory than physical RAM using disk", C: "Virtual machine memory", D: "Cache memory" }, ans: "B" },
+            { id: 101, cat: "Operating Systems", q: "What is a semaphore?", options: { A: "Signal flag in networking", B: "Synchronization variable controlling access to shared resources", C: "OS scheduling unit", D: "Page replacement algorithm" }, ans: "B" },
+            { id: 102, cat: "Operating Systems", q: "What is a race condition?", options: { A: "CPU scheduling algorithm", B: "Outcome depends on relative timing of concurrent processes", C: "Deadlock variant", D: "Priority inversion" }, ans: "B" },
+            { id: 103, cat: "Operating Systems", q: "Critical section is:", options: { A: "Most important OS code", B: "Code segment accessing shared resource; must be mutually exclusive", C: "Kernel interrupt handler", D: "Memory-protected region" }, ans: "B" },
+            { id: 104, cat: "Operating Systems", q: "What is priority inversion?", options: { A: "Lower priority task runs first", B: "High-priority task blocked by lower-priority task holding needed resource", C: "Priority of processes reverses", D: "Scheduling by reverse priority" }, ans: "B" },
+            { id: 105, cat: "Operating Systems", q: "What is preemption in scheduling?", options: { A: "Process voluntarily releases CPU", B: "OS forcibly removes CPU from running process", C: "Process requests more CPU", D: "Process waiting for I/O" }, ans: "B" },
+
+            // Course 8: Software Engineering (Q106-120)
+            { id: 106, cat: "Software Engineering", q: "Waterfall model main drawback?", options: { A: "Too iterative", B: "Inflexible; requirements must be known upfront", C: "No testing phase", D: "Only for small projects" }, ans: "B" },
+            { id: 107, cat: "Software Engineering", q: "Validation means:", options: { A: "Meets specification", B: "Meets actual user needs", C: "Syntax correct", D: "Test coverage adequate" }, ans: "B" },
+            { id: 108, cat: "Software Engineering", q: "SRS purpose?", options: { A: "Documents source code", B: "Formally documents functional and non-functional requirements", C: "Lists bugs found", D: "Provides user manual" }, ans: "B" },
+            { id: 109, cat: "Software Engineering", q: "White-box testing has access to:", options: { A: "I/O only", B: "Internal code structure", C: "User criteria only", D: "Performance benchmarks" }, ans: "B" },
+            { id: 110, cat: "Software Engineering", q: "Spiral model is driven by:", options: { A: "Customer feedback", B: "Risk analysis each cycle", C: "Time-boxed sprints", D: "Sequential phases" }, ans: "B" },
+            { id: 111, cat: "Software Engineering", q: "What is verification in testing?", options: { A: "Meets user needs", B: "Meets specification — are we building it right?", C: "Performance meets benchmarks", D: "Code has no syntax errors" }, ans: "B" },
+            { id: 112, cat: "Software Engineering", q: "Agile values working software over:", options: { A: "Customer collaboration", B: "Comprehensive documentation", C: "Responding to change", D: "Individuals and interactions" }, ans: "B" },
+            { id: 113, cat: "Software Engineering", q: "XP (Extreme Programming) practice: TDD means:", options: { A: "Test-Driven Development — write tests before code", B: "Technology-Driven Design", C: "Test Data Development", D: "Type-Driven Design" }, ans: "A" },
+            { id: 114, cat: "Software Engineering", q: "Cyclomatic complexity measures:", options: { A: "Number of classes", B: "Number of linearly independent paths through code", C: "Lines of code", D: "Memory usage" }, ans: "B" },
+            { id: 115, cat: "Software Engineering", q: "What is the difference between fault, error, and failure?", options: { A: "No difference", B: "Fault=defect in code; error=incorrect state; failure=observable wrong behavior", C: "All mean wrong output", D: "Fault is hardware; error is software" }, ans: "B" },
+            { id: 116, cat: "Software Engineering", q: "Black-box testing is also called?", options: { A: "Clear-box testing", B: "Functional testing (tests I/O behavior without code knowledge)", C: "Structural testing", D: "Unit testing" }, ans: "B" },
+            { id: 117, cat: "Software Engineering", q: "What is coupling in software design?", options: { A: "Measure of class size", B: "Degree of interdependence between modules", C: "Number of methods", D: "Inheritance depth" }, ans: "B" },
+            { id: 118, cat: "Software Engineering", q: "What is cohesion in software design?", options: { A: "Module dependencies", B: "Degree to which elements within module belong together", C: "Code comments quality", D: "Test coverage" }, ans: "B" },
+            { id: 119, cat: "Software Engineering", q: "What is software entropy?", options: { A: "Software performance degradation", B: "Tendency for software to become increasingly complex and harder to maintain", C: "Data corruption", D: "Memory fragmentation" }, ans: "B" },
+            { id: 120, cat: "Software Engineering", q: "What is static analysis?", options: { A: "Analysis of running program", B: "Examining source code without executing to find defects", C: "Performance profiling", D: "Security penetration testing" }, ans: "B" },
+
+            // Course 9: Software Project Management (Q121-135)
+            { id: 121, cat: "Software Project Management", q: "Critical path in project network?", options: { A: "Shortest path", B: "Sequence with zero float — delay causes project delay", C: "Most expensive path", D: "Highest risk path" }, ans: "B" },
+            { id: 122, cat: "Software Project Management", q: "Iron Triangle?", options: { A: "Cost, Quality, Risk", B: "Scope, Time, Cost", C: "Requirements, Design, Testing", D: "Budget, Resources, Schedule" }, ans: "B" },
+            { id: 123, cat: "Software Project Management", q: "WBS is:", options: { A: "Gantt chart", B: "Hierarchical decomposition of project into work packages", C: "Network diagram", D: "Risk register" }, ans: "B" },
+            { id: 124, cat: "Software Project Management", q: "Transfer risk response?", options: { A: "Eliminate cause", B: "Insurance or outsourcing", C: "Reduce probability", D: "Accept risk" }, ans: "C" },
+            { id: 125, cat: "Software Project Management", q: "PERT vs CPM?", options: { A: "PERT has 3 time estimates; CPM one deterministic", B: "CPM has 3 estimates; PERT one", C: "PERT finds critical path; CPM doesn't", D: "CPM for software only" }, ans: "A" },
+            { id: 126, cat: "Software Project Management", q: "Float (slack) in project network means?", options: { A: "Budget buffer", B: "Time task can be delayed without delaying project", C: "Risk probability", D: "Resource availability" }, ans: "B" },
+            { id: 127, cat: "Software Project Management", q: "Risk probability times impact equals:", options: { A: "Risk score/exposure", B: "Risk tolerance", C: "Risk register entry", D: "Risk response" }, ans: "A" },
+            { id: 128, cat: "Software Project Management", q: "Function Point Analysis measures:", options: { A: "Lines of code", B: "Functionality from user perspective independent of language", C: "Number of bugs", D: "Test coverage" }, ans: "B" },
+            { id: 129, cat: "Software Project Management", q: "What is scope creep?", options: { A: "Project schedule slipping", B: "Uncontrolled growth in project scope without corresponding adjustments", C: "Budget overrun", D: "Quality degradation" }, ans: "B" },
+            { id: 130, cat: "Software Project Management", q: "SPI (Schedule Performance Index) > 1 means?", options: { A: "Behind schedule", B: "Ahead of schedule", C: "On schedule", D: "Over budget" }, ans: "B" },
+            { id: 131, cat: "Software Project Management", q: "CPI (Cost Performance Index) < 1 means?", options: { A: "Under budget", B: "On budget", C: "Over budget", D: "Ahead of schedule" }, ans: "C" },
+            { id: 132, cat: "Software Project Management", q: "RACI stands for:", options: { A: "Responsible, Accountable, Consulted, Informed", B: "Resource, Activity, Cost, Integration", C: "Risk, Analysis, Control, Implementation", D: "Requirements, Acceptance, Completion, Inspection" }, ans: "A" },
+            { id: 133, cat: "Software Project Management", q: "COCOMO Basic formula:", options: { A: "Effort = KLOC × team_size", B: "Effort = a × (KLOC)^b", C: "Effort = function_points × cost_per_FP", D: "Effort = lines_per_day × developers" }, ans: "B" },
+            { id: 134, cat: "Software Project Management", q: "Difference between risk and issue in PM?", options: { A: "No difference", B: "Risk is potential future problem; issue is problem that occurred", C: "Issue is potential; risk is occurred", D: "Both are potential" }, ans: "B" },
+            { id: 135, cat: "Software Project Management", q: "What is a minimum viable product (MVP)?", options: { A: "Cheapest possible product", B: "Product with minimum features sufficient to deliver value and get feedback", C: "Beta version", D: "Prototype" }, ans: "B" },
+
+            // Course 10: Fundamentals of Networking (Q136-151)
+            { id: 136, cat: "Fundamentals of Networking", q: "OSI layer for IP routing?", options: { A: "Layer 2", B: "Layer 3", C: "Layer 4", D: "Layer 5" }, ans: "B" },
+            { id: 137, cat: "Fundamentals of Networking", q: "Usable hosts in /24 subnet?", options: { A: "256", B: "255", C: "254", D: "128" }, ans: "C" },
+            { id: 138, cat: "Fundamentals of Networking", q: "NAT purpose?", options: { A: "Encrypts packets", B: "Translates private IPs to public IP", C: "Assigns IPs via DHCP", D: "Resolves domain names" }, ans: "B" },
+            { id: 139, cat: "Fundamentals of Networking", q: "Connection-oriented reliable protocol?", options: { A: "UDP", B: "ICMP", C: "TCP", D: "ARP" }, ans: "C" },
+            { id: 140, cat: "Fundamentals of Networking", q: "VLAN function?", options: { A: "Connects networks via internet", B: "Logically segments network without extra hardware", C: "Translates MAC to IP", D: "Provides wireless access" }, ans: "B" },
+            { id: 141, cat: "Fundamentals of Networking", q: "OSI Transport layer does:", options: { A: "Data Link error detection", B: "Network routing", C: "End-to-end error recovery and flow control", D: "Session establishment" }, ans: "C" },
+            { id: 142, cat: "Fundamentals of Networking", q: "TCP three-way handshake?", options: { A: "SYN, ACK, FIN", B: "SYN, SYN-ACK, ACK", C: "ACK, SYN, FIN", D: "CONNECT, ACCEPT, DATA" }, ans: "B" },
+            { id: 143, cat: "Fundamentals of Networking", q: "IPv6 address size?", options: { A: "32-bit", B: "64-bit", C: "128-bit hexadecimal", D: "256-bit" }, ans: "C" },
+            { id: 144, cat: "Fundamentals of Networking", q: "OSI Data Link layer function?", options: { A: "IP addressing", B: "Physical addressing (MAC), framing, error detection", C: "End-to-end delivery", D: "Application interface" }, ans: "B" },
+            { id: 145, cat: "Fundamentals of Networking", q: "UDP is used for?", options: { A: "File transfer requiring reliability", B: "Email delivery", C: "Video streaming, DNS, VoIP (low latency)", D: "Web browsing" }, ans: "C" },
+            { id: 146, cat: "Fundamentals of Networking", q: "DHCP purpose?", options: { A: "Resolves domain names", B: "Automatically assigns IP addresses", C: "Routes packets", D: "Encrypts traffic" }, ans: "B" },
+            { id: 147, cat: "Fundamentals of Networking", q: "What does a switch do?", options: { A: "Broadcasts to all ports like hub", B: "Forwards frames based on MAC address to specific port", C: "Routes between networks", D: "Assigns IP addresses" }, ans: "B" },
+            { id: 148, cat: "Fundamentals of Networking", q: "What does a router do?", options: { A: "Forwards based on MAC address", B: "Routes packets between networks using IP addresses", C: "Broadcasts to all devices", D: "Assigns MAC addresses" }, ans: "B" },
+            { id: 149, cat: "Fundamentals of Networking", q: "What is ARP?", options: { A: "Address Resolution Protocol — maps IP to MAC address", B: "Automatic Routing Protocol", C: "Application Request Protocol", D: "Address Registration Protocol" }, ans: "A" },
+            { id: 150, cat: "Fundamentals of Networking", q: "TCP flow control uses?", options: { A: "Acknowledgment numbers only", B: "Sliding window mechanism", C: "Sequence numbers only", D: "Checksum verification" }, ans: "B" },
+            { id: 151, cat: "Fundamentals of Networking", q: "What is a MAC address?", options: { A: "32-bit logical address", B: "48-bit hardware address uniquely identifying network interface", C: "IP address version", D: "Subnet mask" }, ans: "B" },
+
+            // Course 11: Information Security (Q152-167)
+            { id: 152, cat: "Information Security", q: "CIA Triad component ensuring data untampered?", options: { A: "Confidentiality", B: "Availability", C: "Integrity", D: "Authentication" }, ans: "C" },
+            { id: 153, cat: "Information Security", q: "Asymmetric vs symmetric encryption?", options: { A: "Asymmetric uses one key", B: "Asymmetric uses key pair; symmetric uses same key", C: "Asymmetric is faster", D: "Symmetric uses public keys" }, ans: "B" },
+            { id: 154, cat: "Information Security", q: "Self-replicating malware needing no host file?", options: { A: "Virus", B: "Trojan", C: "Worm", D: "Rootkit" }, ans: "C" },
+            { id: 155, cat: "Information Security", q: "Salting in password storage?", options: { A: "Encrypting password database", B: "Adding random value before hashing to prevent rainbow table attacks", C: "Hashing multiple times", D: "Storing in separate server" }, ans: "B" },
+            { id: 156, cat: "Information Security", q: "RBAC works by?", options: { A: "Owner sets permissions", B: "Permissions to roles; roles to users", C: "System enforces labels", D: "Attributes determine access" }, ans: "B" },
+            { id: 157, cat: "Information Security", q: "Digital signature verifies?", options: { A: "AES encryption used", B: "Authenticity and integrity — signed hash with private key", C: "Receiver's public key", D: "Encryption speed" }, ans: "B" },
+            { id: 158, cat: "Information Security", q: "Most secure hash in course?", options: { A: "MD5", B: "SHA-1", C: "SHA-256", D: "DES" }, ans: "C" },
+            { id: 159, cat: "Information Security", q: "IDS vs IPS?", options: { A: "IDS blocks; IPS detects", B: "IDS monitors and alerts; IPS actively blocks inline", C: "IDS is Layer 7; IPS Layer 3", D: "IPS needs signatures; IDS doesn't" }, ans: "B" },
+            { id: 160, cat: "Information Security", q: "What is the CIA Triad?", options: { A: "Three-letter agency", B: "Confidentiality, Integrity, Availability — core security principles", C: "Certificate, Identity, Authentication", D: "Control, Integrity, Access" }, ans: "B" },
+            { id: 161, cat: "Information Security", q: "Confidentiality in security means?", options: { A: "Data is accurate", B: "Only authorized parties can access data", C: "System is available", D: "Data is encrypted always" }, ans: "B" },
+            { id: 162, cat: "Information Security", q: "Virus vs Worm?", options: { A: "No difference", B: "Virus needs host file; worm self-replicates across network", C: "Worm needs host file", D: "Both are identical in spreading" }, ans: "B" },
+            { id: 163, cat: "Information Security", q: "How does salting prevent rainbow table attacks?", options: { A: "Encrypts the hash", B: "Makes same password produce different hash, invalidating precomputed tables", C: "Hides password length", D: "Requires longer passwords" }, ans: "B" },
+            { id: 164, cat: "Information Security", q: "Man-in-the-Middle attack?", options: { A: "Insider threat", B: "Attacker secretly intercepts/relays communication between two parties", C: "DDoS attack", D: "SQL injection variant" }, ans: "B" },
+            { id: 165, cat: "Information Security", q: "DDoS attack aims to?", options: { A: "Steal data", B: "Overwhelm system with traffic making it unavailable", C: "Gain unauthorized access", D: "Encrypt files" }, ans: "B" },
+            { id: 166, cat: "Information Security", q: "What is the principle of least privilege in security?", options: { A: "Give all users admin rights", B: "Grant minimum permissions necessary for function", C: "Share credentials", D: "Use simple passwords" }, ans: "B" },
+            { id: 167, cat: "Information Security", q: "What is XSS (Cross-Site Scripting)?", options: { A: "Attacker injects SQL", B: "Attacker injects malicious scripts into trusted website", C: "Forged requests", D: "Traffic interception" }, ans: "B" },
+
+            // Course 12: Artificial Intelligence (Q168-183)
+            { id: 168, cat: "Artificial Intelligence", q: "A* f(n) = g(n) + h(n)?", options: { A: "g=heuristic; h=actual cost", B: "g=cost from start; h=estimated to goal", C: "f=nodes explored", D: "f=path cost; g=depth" }, ans: "B" },
+            { id: 169, cat: "Artificial Intelligence", q: "Admissible heuristic?", options: { A: "Always overestimates", B: "Never overestimates true cost to goal", C: "Computed in O(1)", D: "Returns 0 always" }, ans: "B" },
+            { id: 170, cat: "Artificial Intelligence", q: "IDDFS advantage over BFS?", options: { A: "Faster always", B: "DFS memory with BFS completeness and optimality", C: "Handles weighted edges", D: "Never revisits nodes" }, ans: "B" },
+            { id: 171, cat: "Artificial Intelligence", q: "Alpha-beta pruning?", options: { A: "Changes minimax result", B: "Prunes branches not affecting result; O(b^d) to O(b^(d/2))", C: "Adds learning to minimax", D: "Evaluates leaf nodes only" }, ans: "B" },
+            { id: 172, cat: "Artificial Intelligence", q: "Model-Based Reflex Agent vs Simple Reflex?", options: { A: "Simple has memory", B: "Model-Based maintains internal world model for partial observability", C: "Same capability", D: "Model-Based uses only current percept" }, ans: "B" },
+            { id: 173, cat: "Artificial Intelligence", q: "∀x in First-Order Logic means?", options: { A: "At least one x", B: "For all values of x", C: "Exactly one x", D: "No value of x" }, ans: "B" },
+            { id: 174, cat: "Artificial Intelligence", q: "Bayes Theorem in AI?", options: { A: "Shortest paths", B: "Updating probability of hypothesis given evidence", C: "Game tree evaluation", D: "Neural network training" }, ans: "B" },
+            { id: 175, cat: "Artificial Intelligence", q: "Hill Climbing stuck in?", options: { A: "Goal states", B: "Local maxima, plateaux, ridges", C: "Global maxima", D: "Start states" }, ans: "B" },
+            { id: 176, cat: "Artificial Intelligence", q: "A* space complexity weakness?", options: { A: "Not complete", B: "Not optimal", C: "Keeps all generated nodes in memory", D: "Cannot use heuristics" }, ans: "C" },
+            { id: 177, cat: "Artificial Intelligence", q: "BFS vs DFS completeness?", options: { A: "DFS complete; BFS not", B: "BFS complete; DFS not complete for infinite graphs", C: "Both complete", D: "Neither complete" }, ans: "B" },
+            { id: 178, cat: "Artificial Intelligence", q: "UCS (Uniform Cost Search) expands?", options: { A: "Shallowest node", B: "Deepest node", C: "Node with lowest path cost", D: "Random node" }, ans: "C" },
+            { id: 179, cat: "Artificial Intelligence", q: "Consistent heuristic satisfies?", options: { A: "h(n) = 0 for all n", B: "h(n) ≤ c(n,n') + h(n') for all successors", C: "h(n) > actual cost always", D: "h(n) = g(n) always" }, ans: "B" },
+            { id: 180, cat: "Artificial Intelligence", q: "Simulated annealing improves hill climbing by?", options: { A: "Using better heuristic", B: "Accepting worse moves with decreasing probability to escape local optima", C: "Running multiple agents", D: "Expanding all neighbours" }, ans: "B" },
+            { id: 181, cat: "Artificial Intelligence", q: "Genetic algorithm uses?", options: { A: "Gradient descent", B: "Selection, crossover, mutation on population", C: "Game trees", D: "Constraint propagation" }, ans: "B" },
+            { id: 182, cat: "Artificial Intelligence", q: "CSP (Constraint Satisfaction Problem) components?", options: { A: "States, actions, goals", B: "Variables, domains, constraints", C: "Nodes, edges, weights", D: "Sensors, actuators, environment" }, ans: "C" },
+            { id: 183, cat: "Artificial Intelligence", q: "What is the Turing Test?", options: { A: "Alan Turing's programming language", B: "Test of machine intelligence: can machine converse indistinguishably from human?", C: "Cryptography test", D: "Computational speed test" }, ans: "B" },
+
+            // Course 13: Machine Learning (Q184-200)
+            { id: 184, cat: "Machine Learning", q: "Overfitting in ML?", options: { A: "High bias, poor all data", B: "Low train error, high test error — memorising noise", C: "Generalises too well", D: "Too few parameters" }, ans: "B" },
+            { id: 185, cat: "Machine Learning", q: "Accuracy misleading for imbalanced data?", options: { A: "Cannot compute for multi-class", B: "High accuracy by predicting majority only, ignoring minority", C: "Penalises FN too much", D: "Binary only" }, ans: "B" },
+            { id: 186, cat: "Machine Learning", q: "K-fold cross validation?", options: { A: "Trains k models on k datasets", B: "Splits into k folds; train on k-1, test on 1; repeat k times", C: "K nearest neighbours to validate", D: "k regularisation parameters" }, ans: "B" },
+            { id: 187, cat: "Machine Learning", q: "K-Means stopping criterion?", options: { A: "All clusters equal size", B: "Centroids no longer change significantly", C: "k equals data points", D: "Variance exceeds threshold" }, ans: "B" },
+            { id: 188, cat: "Machine Learning", q: "Backpropagation in neural networks?", options: { A: "Initialises weights", B: "Propagates loss gradient backward to update weights", C: "Forward prediction", D: "Normalises inputs" }, ans: "B" },
+            { id: 189, cat: "Machine Learning", q: "Random Forest reduces overfitting by?", options: { A: "Larger depth", B: "Combining many trees on random subsets/features", C: "Only numerical features", D: "Depth 1 pruning" }, ans: "B" },
+            { id: 190, cat: "Machine Learning", q: "PCA achieves?", options: { A: "Classifies into k clusters", B: "Reduces dimensionality via directions of maximum variance", C: "Removes outliers", D: "Feature selection via MI" }, ans: "B" },
+            { id: 191, cat: "Machine Learning", q: "Bias-variance tradeoff?", options: { A: "High bias=overfitting", B: "High bias=underfitting; high variance=overfitting", C: "Bias=training time; variance=speed", D: "Both should be maximised" }, ans: "B" },
+            { id: 192, cat: "Machine Learning", q: "Reinforcement learning?", options: { A: "Supervised with delayed labels", B: "Unsupervised without rewards", C: "Agent learns by trial/error with rewards/penalties", D: "Semi-supervised sparse labels" }, ans: "C" },
+            { id: 193, cat: "Machine Learning", q: "RNN is for?", options: { A: "Image processing", B: "Sequential data with memory", C: "Autoencoding", D: "Adversarial generation" }, ans: "B" },
+            { id: 194, cat: "Machine Learning", q: "LSTM solves?", options: { A: "Image cost", B: "Vanishing gradient for long sequences", C: "Multi-class classification", D: "Overfitting small datasets" }, ans: "B" },
+            { id: 195, cat: "Machine Learning", q: "Decision tree splits using?", options: { A: "Euclidean distance", B: "Gini impurity or Information Gain", C: "Mean squared error", D: "Manhattan distance" }, ans: "B" },
+            { id: 196, cat: "Machine Learning", q: "SVM finds?", options: { A: "Cluster centroids", B: "Maximum margin hyperplane separating classes", C: "Decision tree splits", D: "Neural network weights" }, ans: "B" },
+            { id: 197, cat: "Machine Learning", q: "SVM kernel trick used for?", options: { A: "Speed up training", B: "Handling non-linearly separable data in higher dimensions", C: "Reducing features", D: "Multi-class extension" }, ans: "B" },
+            { id: 198, cat: "Machine Learning", q: "KNN is called 'lazy learner' because?", options: { A: "Trains slowly", B: "No training phase; computation at prediction time", C: "Low accuracy", D: "Only works on small datasets" }, ans: "B" },
+            { id: 199, cat: "Machine Learning", q: "What is gradient descent?", options: { A: "Descending data gradient", B: "Optimization algorithm iteratively adjusting weights in direction of negative gradient", C: "Learning rate calculation", D: "Backpropagation step" }, ans: "B" },
+            { id: 200, cat: "Machine Learning", q: "Learning rate too high in gradient descent?", options: { A: "Slow convergence", B: "Overshooting minimum, may diverge", C: "Underfitting", D: "Memorising training data" }, ans: "B" }
+        ];
+    </script>
+
+    <!-- MAIN APP WRAPPER -->
+    <main class="flex-grow flex flex-col relative">
+
+        <!-- DASHBOARD CONTAINER -->
+        <section id="dashboard-view" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow flex flex-col justify-center">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Welcome & Info Pane -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="space-y-2">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
+                            Ready for Deployment
+                        </span>
+                        <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-none">
+                            National Exit Exam <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">Simulator Hub</span>
+                        </h2>
+                        <p class="text-slate-400 text-sm sm:text-base max-w-xl">
+                            Prepare comprehensively for the BSc Software Engineering National Exit Exam. Standardized testing parameters with deep analytical reviews.
+                        </p>
+                    </div>
+
+                    <!-- Exam Details / Weights Card -->
+                    <div class="glass-card rounded-2xl p-6 space-y-4 border border-slate-800 glow-indigo">
+                        <h3 class="text-base font-bold text-white flex items-center space-x-2">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                            <span>Exam Blueprint Coverage</span>
+                        </h3>
+                        <div class="grid grid-cols-2 gap-4 text-xs">
+                            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+                                <span class="text-slate-400 block mb-1">Theme 1: Problem Analysis</span>
+                                <span class="text-white font-bold text-sm">60.38% Weight</span>
+                            </div>
+                            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+                                <span class="text-slate-400 block mb-1">Theme 2: Design & Arch</span>
+                                <span class="text-white font-bold text-sm">15.09% Weight</span>
+                            </div>
+                            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+                                <span class="text-slate-400 block mb-1">Theme 3: Network & Security</span>
+                                <span class="text-white font-bold text-sm">13.21% Weight</span>
+                            </div>
+                            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+                                <span class="text-slate-400 block mb-1">Theme 4: Emerging Tech</span>
+                                <span class="text-white font-bold text-sm">11.32% Weight</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Auto-save alert if exists -->
+                    <div id="resume-alert" class="hidden flex items-center justify-between p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-xl">
+                        <div class="flex items-center space-x-3 text-sm text-indigo-300">
+                            <svg class="w-5 h-5 flex-shrink-0 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>You have an ongoing exam session in progress.</span>
+                        </div>
+                        <button onclick="resumeExistingExam()" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white rounded-lg transition">
+                            Resume Session
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Simulation Configuration Box -->
+                <div class="lg:col-span-5">
+                    <div class="glass-card rounded-2xl p-6 border border-slate-800 relative overflow-hidden">
+                        <div class="absolute -right-16 -top-16 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl"></div>
+                        
+                        <h3 class="text-lg font-bold text-white mb-6 flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                            </svg>
+                            <span>Configure Simulation</span>
+                        </h3>
+
+                        <div class="space-y-6">
+                            <!-- MODE -->
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Simulation Style</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button type="button" id="btn-mode-exam" onclick="setMode('exam')" class="h-14 rounded-xl border flex flex-col justify-center px-4 transition text-left cursor-pointer border-indigo-500 bg-indigo-500/10 text-white shadow-md">
+                                        <span class="text-xs font-bold block">Exam Mode</span>
+                                        <span class="text-[10px] text-indigo-300">Grade after completion</span>
+                                    </button>
+                                    <button type="button" id="btn-mode-practice" onclick="setMode('practice')" class="h-14 rounded-xl border flex flex-col justify-center px-4 transition text-left cursor-pointer border-slate-800 hover:border-slate-700 bg-slate-900/40 text-slate-400 hover:text-slate-200">
+                                        <span class="text-xs font-bold block">Practice Mode</span>
+                                        <span class="text-[10px] text-slate-500">Instant explanations</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- SIZE -->
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Session Volume</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button type="button" id="btn-size-200" onclick="setSize(200)" class="py-2.5 rounded-xl border text-xs font-bold transition border-indigo-500 bg-indigo-500/10 text-white">
+                                        200 Qs <span class="block text-[10px] font-normal text-indigo-300">6 Hours</span>
+                                    </button>
+                                    <button type="button" id="btn-size-100" onclick="setSize(100)" class="py-2.5 rounded-xl border text-xs font-bold transition border-slate-800 bg-slate-900/40 text-slate-400 hover:text-slate-200 hover:border-slate-700">
+                                        100 Qs <span class="block text-[10px] font-normal text-slate-500">3 Hours</span>
+                                    </button>
+                                    <button type="button" id="btn-size-50" onclick="setSize(50)" class="py-2.5 rounded-xl border text-xs font-bold transition border-slate-800 bg-slate-900/40 text-slate-400 hover:text-slate-200 hover:border-slate-700">
+                                        50 Qs <span class="block text-[10px] font-normal text-slate-500">1.5 Hours</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- START TRIGGER -->
+                            <button onclick="launchExamSession()" class="w-full h-12 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-sm tracking-wide shadow-xl shadow-indigo-500/10 hover:shadow-indigo-500/20 transform hover:-translate-y-0.5 active:translate-y-0 transition flex items-center justify-center space-x-2">
+                                <span>Launch National Simulation</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- EXAM CONSOLE VIEW -->
+        <section id="exam-view" class="hidden flex-grow flex flex-col h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] overflow-hidden">
+            <!-- Console Topbar -->
+            <div class="border-b border-slate-800 bg-premium-900/50 px-4 sm:px-6 py-3 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-lg text-slate-300 font-medium">
+                        Status: <span id="session-status" class="text-emerald-400 font-bold tracking-wide animate-pulse uppercase">Active</span>
+                    </div>
+                    <div id="practice-indicator" class="hidden text-xs bg-amber-500/10 px-3 py-1.5 rounded-lg text-amber-400 border border-amber-500/20 font-medium">
+                        Practice Mode Enabled
+                    </div>
+                </div>
+                
+                <!-- Countdown Timer -->
+                <div class="flex items-center space-x-3 bg-slate-900/80 border border-slate-800 px-4 py-2 rounded-xl text-white font-mono">
+                    <svg class="w-4 h-4 text-indigo-400 animate-spin" style="animation-duration: 4s" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span id="countdown-timer" class="font-bold text-sm sm:text-base tracking-widest text-slate-200">06:00:00</span>
+                </div>
+            </div>
+
+            <!-- Main Working Console Split Layout -->
+            <div class="flex-grow flex flex-col md:flex-row overflow-hidden relative">
+                
+                <!-- Left Nav Bar (Grid & Filters) -->
+                <div class="w-full md:w-80 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col bg-premium-900/30 flex-shrink-0 h-48 md:h-auto overflow-hidden">
+                    <div class="p-4 border-b border-slate-800 flex items-center justify-between flex-shrink-0">
+                        <span class="text-xs font-bold text-slate-400 tracking-wide uppercase">Question Navigator</span>
+                        <div class="flex space-x-1">
+                            <button onclick="setGridFilter('all')" id="filter-all" class="text-[10px] px-2 py-1 rounded bg-indigo-600 text-white font-semibold">All</button>
+                            <button onclick="setGridFilter('flagged')" id="filter-flagged" class="text-[10px] px-2 py-1 rounded bg-slate-800 text-slate-300 font-medium hover:bg-slate-700">Flagged</button>
+                            <button onclick="setGridFilter('unanswered')" id="filter-unanswered" class="text-[10px] px-2 py-1 rounded bg-slate-800 text-slate-300 font-medium hover:bg-slate-700">Left</button>
+                        </div>
+                    </div>
+                    <!-- Navigator Grid -->
+                    <div id="navigator-grid" class="flex-grow overflow-y-auto p-4 grid grid-cols-6 sm:grid-cols-10 md:grid-cols-5 gap-2 content-start">
+                        <!-- Instantiated programmatically -->
+                    </div>
+                </div>
+
+                <!-- Right Working Card (Question pane) -->
+                <div class="flex-grow flex flex-col overflow-y-auto p-4 sm:p-8 bg-slate-900/10">
+                    <div class="max-w-3xl mx-auto w-full flex-grow flex flex-col justify-between">
+                        
+                        <!-- Question Header Block -->
+                        <div class="space-y-6">
+                            <!-- Course Title / Question Progress bar -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div>
+                                    <span id="course-category-badge" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-indigo-300 border border-slate-700 uppercase tracking-widest">
+                                        Fundamentals of Databases
+                                    </span>
+                                </div>
+                                <div class="text-xs text-slate-400 font-medium">
+                                    Question <span id="active-index-text" class="text-white font-bold">1</span> of <span id="total-count-text" class="text-slate-300">200</span>
+                                </div>
+                            </div>
+
+                            <!-- Progress Track -->
+                            <div class="w-full bg-slate-800/60 h-1.5 rounded-full overflow-hidden">
+                                <div id="progress-bar-fill" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+
+                            <!-- Actual Question Text -->
+                            <div class="space-y-4">
+                                <p id="question-text" class="text-lg sm:text-xl font-bold text-white leading-relaxed tracking-wide">
+                                    Which normal form specifically eliminates transitive functional dependencies?
+                                </p>
+                            </div>
+
+                            <!-- Options Block -->
+                            <div id="options-container" class="space-y-3 pt-4">
+                                <!-- Generated Dynamically -->
+                            </div>
+
+                            <!-- Practice Mode Immediate Feedbacks -->
+                            <div id="practice-feedback-card" class="hidden p-4 rounded-xl border mt-4 text-xs">
+                                <div class="flex items-center space-x-2 font-bold mb-1">
+                                    <span id="practice-feedback-indicator"></span>
+                                    <span id="practice-feedback-title"></span>
+                                </div>
+                                <p id="practice-feedback-body" class="text-slate-400 leading-relaxed"></p>
+                            </div>
+                        </div>
+
+                        <!-- Lower Control Bar -->
+                        <div class="flex flex-wrap items-center justify-between border-t border-slate-800/60 pt-6 mt-8 gap-4">
+                            <button onclick="navigateQuestion(-1)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-200 rounded-xl transition flex items-center space-x-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                                </svg>
+                                <span>Previous</span>
+                            </button>
+
+                            <div class="flex items-center space-x-2">
+                                <button onclick="toggleActiveBookmark()" id="btn-bookmark" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-400 transition" title="Flag Question">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                    </svg>
+                                </button>
+                                <button onclick="clearActiveAnswer()" class="text-xs text-slate-400 hover:text-white transition font-semibold px-3 py-2">
+                                    Clear Selection
+                                </button>
+                            </div>
+
+                            <button onclick="navigateQuestion(1)" id="btn-next" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition flex items-center space-x-2">
+                                <span>Next</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Submit Test Card -->
+                        <div class="mt-8 border-t border-slate-800/40 pt-4 flex justify-end">
+                            <button onclick="promptSubmitModal()" class="w-full sm:w-auto px-6 h-11 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-bold text-xs rounded-xl tracking-wider uppercase transition-all shadow-lg shadow-red-950/20">
+                                Submit Exam
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- RESULTS VIEW -->
+        <section id="results-view" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+            <div class="space-y-8">
+                
+                <!-- Main Congratulatory / Score board -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+                    <div class="absolute -right-24 -bottom-24 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl"></div>
+                    
+                    <div class="space-y-4 text-center md:text-left">
+                        <span id="results-verdict-badge" class="inline-flex px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                            Verdict: Passed
+                        </span>
+                        <h2 class="text-3xl sm:text-5xl font-extrabold text-white leading-none">Simulation Results</h2>
+                        <p class="text-slate-400 text-xs sm:text-sm max-w-lg">
+                            Performance summary for the BSc Software Engineering National Exit Exam parameters. Re-visit domain details below.
+                        </p>
+                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                            <button onclick="restartExamSimulator()" class="px-5 h-10 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition">
+                                Launch New Exam
+                            </button>
+                            <button onclick="toggleMistakeReview()" id="btn-toggle-mistake" class="px-5 h-10 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl transition">
+                                Review Mistakes
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pure Dynamic Score Widget SVG -->
+                    <div class="flex items-center space-x-6">
+                        <div class="relative w-32 h-32 flex items-center justify-center">
+                            <!-- SVG Circle Progress -->
+                            <svg class="absolute w-full h-full -rotate-90">
+                                <circle cx="64" cy="64" r="56" stroke="rgba(255,255,255,0.03)" stroke-width="12" fill="transparent" />
+                                <circle id="results-progress-circle" cx="64" cy="64" r="56" stroke="#6366f1" stroke-width="12" fill="transparent" stroke-dasharray="351.85" stroke-dashoffset="351.85" stroke-linecap="round" class="transition-all duration-1000" />
+                            </svg>
+                            <div class="text-center">
+                                <span id="results-percentage" class="text-2xl sm:text-3xl font-extrabold text-white block">0%</span>
+                                <span id="results-ratio" class="text-[10px] text-slate-400 block tracking-wider uppercase">0/200</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Category Mastery Section -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-white tracking-wide flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
+                        </svg>
+                        <span>Domain Proficiency Dashboard</span>
+                    </h3>
+                    <div id="mastery-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Instantiated Programmatically per course -->
+                    </div>
+                </div>
+
+                <!-- Complete Mistake Review Interface -->
+                <div id="mistake-review-container" class="hidden space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-bold text-red-400 tracking-wide">Review Missed Prompts</h3>
+                        <span id="mistake-count-badge" class="text-xs bg-red-500/10 text-red-400 border border-red-500/20 px-3 py-1 rounded-full font-bold">0 Missed</span>
+                    </div>
+                    <div id="mistake-list" class="space-y-4">
+                        <!-- Questions user got wrong are filled here -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER STATUS -->
+    <footer class="border-t border-slate-800 bg-premium-950/60 py-4 flex-shrink-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+            <p>&copy; 2026 exit exam simulation gateway system.</p>
+            <div class="flex space-x-4">
+                <a href="#" onclick="localStorage.clear(); location.reload();" class="hover:text-slate-300">Clean Cache</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CUSTOM INTERACTIVE MODALS -->
+    <div id="submit-confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-premium-950/80 backdrop-blur-sm transition-all">
+        <div class="glass-card rounded-2xl max-w-md w-full p-6 space-y-6 border border-slate-800 shadow-2xl relative">
+            <div class="space-y-2">
+                <h3 class="text-lg font-extrabold text-white">Finalize Exit Exam Submission</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    You are submitting your simulation results for grading. Unanswered questions will be scored as zero. This cannot be undone.
+                </p>
+            </div>
+            
+            <div class="p-3 bg-slate-900/60 border border-slate-800 rounded-xl space-y-2 text-xs">
+                <div class="flex justify-between">
+                    <span class="text-slate-400">Total Questions:</span>
+                    <span id="modal-total-qs" class="text-white font-bold">200</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-400">Answered:</span>
+                    <span id="modal-answered-qs" class="text-emerald-400 font-bold">0</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-400">Left Unanswered:</span>
+                    <span id="modal-left-qs" class="text-red-400 font-bold">200</span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="dismissSubmitModal()" class="flex-grow py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition">
+                    Keep Reviewing
+                </button>
+                <button onclick="confirmSubmitExam()" class="flex-grow py-2.5 bg-gradient-to-r from-emerald-500 to-indigo-600 hover:from-emerald-600 hover:to-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-indigo-500/10">
+                    Grade Me Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- SIMULATOR CONTROLLER -->
+    <script>
+        // System variables
+        let appState = {
+            mode: 'exam', // 'exam' or 'practice'
+            size: 200,    // 200, 100, 50, 20
+            questions: [], // Subset of active test questions
+            userAnswers: {}, // id: selectedOption
+            bookmarks: {}, // id: true/false
+            currentIndex: 0,
+            timeLeft: 0,   // seconds remaining
+            timerInterval: null,
+            gridFilter: 'all' // 'all', 'flagged', 'unanswered'
+        };
+
+        // Initialize state on page load
+        window.onload = function() {
+            checkForExistingSession();
+            setMode('exam');
+            setSize(200);
+        };
+
+        // Check for persistent browser state to resume test
+        function checkForExistingSession() {
+            const savedState = localStorage.getItem('exit_exam_sim_state');
+            if (savedState) {
+                try {
+                    const parsed = JSON.parse(savedState);
+                    if (parsed.questions && parsed.questions.length > 0) {
+                        document.getElementById('resume-alert').classList.remove('hidden');
+                    }
+                } catch (e) {
+                    localStorage.removeItem('exit_exam_sim_state');
+                }
+            }
+        }
+
+        // Configuration setup
+        function setMode(mode) {
+            appState.mode = mode;
+            const examBtn = document.getElementById('btn-mode-exam');
+            const practiceBtn = document.getElementById('btn-mode-practice');
+
+            if (mode === 'exam') {
+                examBtn.className = "h-14 rounded-xl border flex flex-col justify-center px-4 transition text-left cursor-pointer border-indigo-500 bg-indigo-500/10 text-white shadow-md";
+                practiceBtn.className = "h-14 rounded-xl border flex flex-col justify-center px-4 transition text-left cursor-pointer border-slate-800 hover:border-slate-700 bg-slate-900/40 text-slate-400 hover:text-slate-200";
+                document.getElementById('practice-indicator').classList.add('hidden');
+            } else {
+                practiceBtn.className = "h-14 rounded-xl border flex flex-col justify-center px-4 transition text-left cursor-pointer border-indigo-500 bg-indigo-500/10 text-white shadow-md";
+                examBtn.className = "h-14 rounded-xl border flex flex-col justify-center px-4 transition text-left cursor-pointer border-slate-800 hover:border-slate-700 bg-slate-900/40 text-slate-400 hover:text-slate-200";
+                document.getElementById('practice-indicator').classList.remove('hidden');
+            }
+        }
+
+        function setSize(size) {
+            appState.size = size;
+            const sizes = [200, 100, 50];
+            sizes.forEach(s => {
+                const btn = document.getElementById(`btn-size-${s}`);
+                if (s === size) {
+                    btn.className = "py-2.5 rounded-xl border text-xs font-bold transition border-indigo-500 bg-indigo-500/10 text-white";
+                } else {
+                    btn.className = "py-2.5 rounded-xl border text-xs font-bold transition border-slate-800 bg-slate-900/40 text-slate-400 hover:text-slate-200 hover:border-slate-700";
+                }
+            });
+        }
+
+        // Launch Simulation from scratch
+        function launchExamSession() {
+            document.getElementById('resume-alert').classList.add('hidden');
+            
+            // Generate a balanced set of questions representing the 13 domains
+            appState.questions = gatherQuestionsSubset(appState.size);
+            appState.userAnswers = {};
+            appState.bookmarks = {};
+            appState.currentIndex = 0;
+            appState.gridFilter = 'all';
+
+            // Calculate exact proportional time allocation (6 Hours for 200 Questions)
+            // 200 Qs = 21600s, 100 Qs = 10800s, 50 Qs = 5400s
+            appState.timeLeft = (appState.size / 200) * 6 * 60 * 60; 
+
+            saveStateToBrowser();
+            startSimulationInterface();
+        }
+
+        // Resume session from browser storage
+        function resumeExistingExam() {
+            const savedState = localStorage.getItem('exit_exam_sim_state');
+            if (savedState) {
+                try {
+                    const parsed = JSON.parse(savedState);
+                    appState = parsed;
+                    document.getElementById('resume-alert').classList.add('hidden');
+                    startSimulationInterface();
+                } catch (e) {
+                    launchExamSession();
+                }
+            }
+        }
+
+        // Gather proportional distribution across the categories
+        function gatherQuestionsSubset(size) {
+            // If full size is requested, return original directly
+            if (size === 200) {
+                return [...EXAM_DATABASE];
+            }
+            // Shuffle database first
+            const shuffled = [...EXAM_DATABASE].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, size);
+        }
+
+        // Start Simulator Screens & timers
+        function startSimulationInterface() {
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('results-view').classList.add('hidden');
+            document.getElementById('exam-view').classList.remove('hidden');
+
+            renderQuestionNavigatorGrid();
+            renderActiveQuestion();
+            startTimerCountdown();
+        }
+
+
+        // Renders Grid bubbles for fast navigation
+        function renderQuestionNavigatorGrid() {
+            const container = document.getElementById('navigator-grid');
+            container.innerHTML = '';
+
+            appState.questions.forEach((q, index) => {
+                const isAnswered = appState.userAnswers[q.id] !== undefined;
+                const isBookmarked = appState.bookmarks[q.id] === true;
+                const isActive = index === appState.currentIndex;
+
+                // Determine styling parameters
+                let bubbleClass = "w-10 h-10 rounded-xl text-xs font-bold border flex items-center justify-center transition active:scale-95 cursor-pointer ";
+                if (isActive) {
+                    bubbleClass += "border-white bg-indigo-500 text-white shadow-md shadow-indigo-500/20 ";
+                } else if (isBookmarked) {
+                    bubbleClass += "border-amber-500 bg-amber-500/15 text-amber-400 ";
+                } else if (isAnswered) {
+                    bubbleClass += "border-slate-700 bg-slate-800 text-slate-200 ";
+                } else {
+                    bubbleClass += "border-slate-800 bg-slate-900/30 text-slate-500 hover:border-slate-700 hover:text-slate-300 ";
+                }
+
+                // Filter matching visibility
+                let isVisible = true;
+                if (appState.gridFilter === 'flagged' && !isBookmarked) isVisible = false;
+                if (appState.gridFilter === 'unanswered' && isAnswered) isVisible = false;
+
+                if (isVisible) {
+                    const bubble = document.createElement('button');
+                    bubble.type = 'button';
+                    bubble.className = bubbleClass;
+                    bubble.innerText = index + 1;
+                    bubble.onclick = () => jumpToQuestion(index);
+                    container.appendChild(bubble);
+                }
+            });
+        }
+
+        // Navigation filters
+        function setGridFilter(filter) {
+            appState.gridFilter = filter;
+            const filters = ['all', 'flagged', 'unanswered'];
+            filters.forEach(f => {
+                const btn = document.getElementById(`filter-${f}`);
+                if (f === filter) {
+                    btn.className = "text-[10px] px-2 py-1 rounded bg-indigo-600 text-white font-semibold";
+                } else {
+                    btn.className = "text-[10px] px-2 py-1 rounded bg-slate-800 text-slate-300 font-medium hover:bg-slate-700";
+                }
+            });
+            renderQuestionNavigatorGrid();
+        }
+
+        function jumpToQuestion(index) {
+            appState.currentIndex = index;
+            renderActiveQuestion();
+            renderQuestionNavigatorGrid();
+            saveStateToBrowser();
+        }
+
+        function navigateQuestion(direction) {
+            const target = appState.currentIndex + direction;
+            if (target >= 0 && target < appState.questions.length) {
+                jumpToQuestion(target);
+            }
+        }
+
+        // Render selected active question
+        function renderActiveQuestion() {
+            const q = appState.questions[appState.currentIndex];
+            
+            // Header information
+            document.getElementById('course-category-badge').innerText = q.cat;
+            document.getElementById('active-index-text').innerText = appState.currentIndex + 1;
+            document.getElementById('total-count-text').innerText = appState.questions.length;
+            document.getElementById('question-text').innerText = q.q;
+
+            // Render options inside container
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const selectedAnswer = appState.userAnswers[q.id];
+
+            Object.entries(q.options).forEach(([key, value]) => {
+                const isSelected = selectedAnswer === key;
+                
+                let optionClass = "w-full p-4 rounded-xl border text-left transition relative flex items-center justify-between cursor-pointer ";
+                if (isSelected) {
+                    optionClass += "border-indigo-500 bg-indigo-500/10 text-white font-medium shadow-md";
+                } else {
+                    optionClass += "border-slate-800 bg-slate-900/40 text-slate-300 hover:border-slate-700 hover:text-slate-100";
+                }
+
+                const optButton = document.createElement('button');
+                optButton.type = 'button';
+                optButton.className = optionClass;
+                optButton.onclick = () => selectOption(q.id, key);
+
+                optButton.innerHTML = `
+                    <div class="flex items-center space-x-3 pr-4">
+                        <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs ${isSelected ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400'}">${key}</span>
+                        <span class="text-xs sm:text-sm leading-relaxed">${value}</span>
+                    </div>
+                    ${isSelected ? `
+                        <div class="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                    ` : `
+                        <div class="w-5 h-5 rounded-full border border-slate-700 flex-shrink-0"></div>
+                    `}
+                `;
+
+                optionsContainer.appendChild(optButton);
+            });
+
+            // Update Bookmark visual feedback
+            const isBookmarked = appState.bookmarks[q.id] === true;
+            const bookmarkBtn = document.getElementById('btn-bookmark');
+            if (isBookmarked) {
+                bookmarkBtn.className = "p-2 bg-amber-500/15 hover:bg-amber-500/25 rounded-xl text-amber-500 transition";
+            } else {
+                bookmarkBtn.className = "p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-400 transition";
+            }
+
+            // Update overall progress bar width
+            const answeredCount = Object.keys(appState.userAnswers).length;
+            const progressPercent = (answeredCount / appState.questions.length) * 100;
+            document.getElementById('progress-bar-fill').style.width = `${progressPercent}%`;
+
+            // Practice Mode Immediate Evaluation display
+            const feedbackCard = document.getElementById('practice-feedback-card');
+            if (appState.mode === 'practice' && selectedAnswer !== undefined) {
+                feedbackCard.classList.remove('hidden');
+                const isCorrect = selectedAnswer === q.ans;
+                const ind = document.getElementById('practice-feedback-indicator');
+                const title = document.getElementById('practice-feedback-title');
+                const body = document.getElementById('practice-feedback-body');
+
+                if (isCorrect) {
+                    feedbackCard.className = "p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 mt-4 text-xs text-emerald-400";
+                    ind.innerHTML = "✓";
+                    title.innerText = "Correct Choice!";
+                    body.innerText = `Great job. The standard textbook solution points specifically to Option ${q.ans}.`;
+                } else {
+                    feedbackCard.className = "p-4 rounded-xl border border-red-500/20 bg-red-500/5 mt-4 text-xs text-red-400";
+                    ind.innerHTML = "✗";
+                    title.innerText = "Incorrect Choice";
+                    body.innerText = `The expected solution is Option ${q.ans} (${q.options[q.ans]}). Make sure to adjust your domain understanding.`;
+                }
+            } else {
+                feedbackCard.classList.add('hidden');
+            }
+        }
+
+        // Selection action
+        function selectOption(qId, key) {
+            appState.userAnswers[qId] = key;
+            renderActiveQuestion();
+            renderQuestionNavigatorGrid();
+            saveStateToBrowser();
+        }
+
+        // Clear answer action
+        function clearActiveAnswer() {
+            const q = appState.questions[appState.currentIndex];
+            delete appState.userAnswers[q.id];
+            renderActiveQuestion();
+            renderQuestionNavigatorGrid();
+            saveStateToBrowser();
+        }
+
+        // Toggle Flag Question
+        function toggleActiveBookmark() {
+            const q = appState.questions[appState.currentIndex];
+            appState.bookmarks[q.id] = !appState.bookmarks[q.id];
+            renderActiveQuestion();
+            renderQuestionNavigatorGrid();
+            saveStateToBrowser();
+        }
+
+
+        // Dynamic state persistent storage
+        function saveStateToBrowser() {
+            localStorage.setItem('exit_exam_sim_state', JSON.stringify(appState));
+        }
+
+        // Timer controller loop
+        function startTimerCountdown() {
+            if (appState.timerInterval) clearInterval(appState.timerInterval);
+            
+            updateTimerDisplay();
+
+            appState.timerInterval = setInterval(() => {
+                appState.timeLeft--;
+                updateTimerDisplay();
+
+                // Periodic save to keep time elapsed locked
+                if (appState.timeLeft % 5 === 0) {
+                    saveStateToBrowser();
+                }
+
+                if (appState.timeLeft <= 0) {
+                    clearInterval(appState.timerInterval);
+                    autoSubmitTest();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const hrs = Math.floor(appState.timeLeft / 3600);
+            const mins = Math.floor((appState.timeLeft % 3600) / 60);
+            const secs = appState.timeLeft % 60;
+
+            const timeStr = `${padZero(hrs)}:${padZero(mins)}:${padZero(secs)}`;
+            document.getElementById('countdown-timer').innerText = timeStr;
+
+            // Warning glowing state shift at 15 minutes left
+            if (appState.timeLeft < 15 * 60) {
+                document.getElementById('countdown-timer').className = "font-bold text-sm sm:text-base tracking-widest text-red-500 animate-pulse";
+            } else {
+                document.getElementById('countdown-timer').className = "font-bold text-sm sm:text-base tracking-widest text-slate-200";
+            }
+        }
+
+        function padZero(num) {
+            return num < 10 ? '0' + num : num;
+        }
+
+
+        // Trigger modal prompt
+        function promptSubmitModal() {
+            const total = appState.questions.length;
+            const answered = Object.keys(appState.userAnswers).length;
+            const left = total - answered;
+
+            document.getElementById('modal-total-qs').innerText = total;
+            document.getElementById('modal-answered-qs').innerText = answered;
+            document.getElementById('modal-left-qs').innerText = left;
+
+            document.getElementById('submit-confirm-modal').classList.remove('hidden');
+        }
+
+        function dismissSubmitModal() {
+            document.getElementById('submit-confirm-modal').classList.add('hidden');
+        }
+
+        function autoSubmitTest() {
+            dismissSubmitModal();
+            confirmSubmitExam();
+        }
+
+        function confirmSubmitExam() {
+            clearInterval(appState.timerInterval);
+            dismissSubmitModal();
+            
+            // Wipe persistent lock
+            localStorage.removeItem('exit_exam_sim_state');
+
+            // Trigger analytical calculations
+            calculateSimulationScore();
+        }
+
+
+        // Calculate score parameters and display dashboard
+        function calculateSimulationScore() {
+            document.getElementById('exam-view').classList.add('hidden');
+            document.getElementById('results-view').classList.remove('hidden');
+
+            let totalQuestions = appState.questions.length;
+            let correctAnswersCount = 0;
+
+            // Structure score tracking per categories
+            const categoryScores = {};
+
+            appState.questions.forEach(q => {
+                const userAns = appState.userAnswers[q.id];
+                const isCorrect = userAns === q.ans;
+
+                if (isCorrect) correctAnswersCount++;
+
+                // Track category scores
+                if (!categoryScores[q.cat]) {
+                    categoryScores[q.cat] = { correct: 0, total: 0 };
+                }
+                categoryScores[q.cat].total++;
+                if (isCorrect) {
+                    categoryScores[q.cat].correct++;
+                }
+            });
+
+            const scorePercent = Math.round((correctAnswersCount / totalQuestions) * 100);
+            
+            // Pass/Fail limits (50% is standard Exit Exam passing criteria)
+            const passLimit = 50;
+            const passed = scorePercent >= passLimit;
+
+            // Display overall values
+            const verdictBadge = document.getElementById('results-verdict-badge');
+            if (passed) {
+                verdictBadge.className = "inline-flex px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                verdictBadge.innerText = "Verdict: Passed (Proficient)";
+            } else {
+                verdictBadge.className = "inline-flex px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-red-500/10 text-red-400 border border-red-500/20";
+                verdictBadge.innerText = "Verdict: Failed (Needs Review)";
+            }
+
+            document.getElementById('results-percentage').innerText = `${scorePercent}%`;
+            document.getElementById('results-ratio').innerText = `${correctAnswersCount}/${totalQuestions}`;
+
+            // Trigger beautiful dynamic gauge circle stroke manipulation
+            const circle = document.getElementById('results-progress-circle');
+            const circumference = 2 * Math.PI * 56; // 351.85
+            const offset = circumference - (scorePercent / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+
+            // Populate Category Mastery Dashboard
+            const masteryGrid = document.getElementById('mastery-grid');
+            masteryGrid.innerHTML = '';
+
+            Object.entries(categoryScores).forEach(([catName, stats]) => {
+                const catPercent = Math.round((stats.correct / stats.total) * 100);
+                
+                let rating = "Needs Focus";
+                let colorClass = "text-red-400";
+                let barColor = "bg-red-500";
+                if (catPercent >= 75) {
+                    rating = "Proficient";
+                    colorClass = "text-emerald-400";
+                    barColor = "bg-emerald-500";
+                } else if (catPercent >= 50) {
+                    rating = "Developing";
+                    colorClass = "text-amber-400";
+                    barColor = "bg-amber-500";
+                }
+
+                const card = document.createElement('div');
+                card.className = "bg-slate-900/50 p-4 rounded-xl border border-slate-800 space-y-3";
+                card.innerHTML = `
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-200 tracking-wide block truncate pr-3 max-w-[200px] sm:max-w-none">${catName}</span>
+                        <span class="font-bold ${colorClass}">${stats.correct}/${stats.total} (${catPercent}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                        <div class="${barColor} h-full transition-all duration-500" style="width: ${catPercent}%"></div>
+                    </div>
+                    <div class="flex items-center justify-between text-[10px]">
+                        <span class="text-slate-500 uppercase tracking-wider">Course Module Tracker</span>
+                        <span class="font-bold uppercase ${colorClass}">${rating}</span>
+                    </div>
+                `;
+                masteryGrid.appendChild(card);
+            });
+
+            // Prepare missed questions list for user feedback review
+            prepareMistakeReviewSection();
+        }
+
+        // Create Mistakes review deck
+        function prepareMistakeReviewSection() {
+            const list = document.getElementById('mistake-list');
+            list.innerHTML = '';
+
+            let wrongCount = 0;
+
+            appState.questions.forEach((q, index) => {
+                const userAns = appState.userAnswers[q.id];
+                const isCorrect = userAns === q.ans;
+
+                if (!isCorrect) {
+                    wrongCount++;
+
+                    const item = document.createElement('div');
+                    item.className = "bg-slate-900/40 border border-slate-800 rounded-xl p-5 space-y-3";
+                    
+                    item.innerHTML = `
+                        <div class="flex items-center justify-between text-[10px] gap-2">
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-400 uppercase tracking-widest font-semibold">${q.cat}</span>
+                            <span class="text-slate-500">Question ${index + 1} of ${appState.questions.length}</span>
+                        </div>
+                        <h4 class="text-sm font-bold text-white leading-relaxed tracking-wide">${q.q}</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
+                            <div class="p-3 rounded-lg bg-red-500/5 border border-red-500/10 text-xs">
+                                <span class="text-[10px] text-slate-500 block uppercase font-bold">Your Response:</span>
+                                <span class="font-semibold text-red-400">${userAns !== undefined ? `${userAns}) ${q.options[userAns]}` : "None (Left blank)"}</span>
+                            </div>
+                            <div class="p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/10 text-xs">
+                                <span class="text-[10px] text-slate-500 block uppercase font-bold">Expected Key Answer:</span>
+                                <span class="font-semibold text-emerald-400">${q.ans}) ${q.options[q.ans]}</span>
+                            </div>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                }
+            });
+
+            document.getElementById('mistake-count-badge').innerText = `${wrongCount} Missed`;
+            
+            // Hide review section by default
+            document.getElementById('mistake-review-container').classList.add('hidden');
+            document.getElementById('btn-toggle-mistake').className = "px-5 h-10 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl transition";
+        }
+
+        // Toggle Mistake Review layout visibility
+        function toggleMistakeReview() {
+            const container = document.getElementById('mistake-review-container');
+            const btn = document.getElementById('btn-toggle-mistake');
+            const isHidden = container.classList.contains('hidden');
+
+            if (isHidden) {
+                container.classList.remove('hidden');
+                btn.className = "px-5 h-10 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-indigo-500/10";
+                
+                // Smooth scroll to element block
+                container.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                container.classList.add('hidden');
+                btn.className = "px-5 h-10 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl transition";
+            }
+        }
+
+        // Reset Simulator
+        function restartExamSimulator() {
+            document.getElementById('results-view').classList.add('hidden');
+            document.getElementById('exam-view').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.remove('hidden');
+
+            checkForExistingSession();
+        }
+    </script>
+</body>
+</html>
